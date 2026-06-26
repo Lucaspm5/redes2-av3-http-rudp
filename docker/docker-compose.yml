@@ -1,0 +1,50 @@
+services:
+  dns:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: dns
+    networks:
+      rede_teste:
+        ipv4_address: 10.0.0.4
+    volumes:
+      - ../logs:/app/logs
+      - ../capturas:/app/capturas
+    command: tail -f /dev/null
+
+  servidor:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: servidor
+    networks:
+      rede_teste:
+        ipv4_address: 10.0.0.2
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ../logs:/app/logs
+      - ../capturas:/app/capturas
+    command: tail -f /dev/null
+
+  cliente:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: cliente
+    networks:
+      rede_teste:
+        ipv4_address: 10.0.0.3
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ../logs:/app/logs
+      - ../capturas:/app/capturas
+    command: tail -f /dev/null
+
+networks:
+  rede_teste:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
